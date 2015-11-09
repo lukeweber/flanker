@@ -88,7 +88,7 @@ class MimeHeaders(object):
         """
         Returns header,val pairs in the preserved order.
         """
-        return list(self.items())
+        return list(self.iteritems())
 
     def iteritems(self, raw=False):
         """
