@@ -117,7 +117,7 @@ def test_container_add_child():
 
     c.add_child(c2)
     eq_(c2, c.child)
-    eq_(c1, c2.next)
+    eq_(c1, c2.__next__)
     eq_(c2, c1.prev)
     eq_(c, c2.parent)
     eq_(None, c2.prev)
@@ -131,7 +131,7 @@ def test_container_remove_child():
     eq_(None, c.child)
     eq_(None, c1.parent)
     eq_(None, c1.prev)
-    eq_(None, c1.next)
+    eq_(None, c1.__next__)
 
 
     c, c1, c2 = make_empty(3)
@@ -140,7 +140,7 @@ def test_container_remove_child():
     c.add_child(c2)
     c.remove_child(c1)
     eq_(c2, c.child)
-    eq_(None, c2.next)
+    eq_(None, c2.__next__)
     eq_(None, c1.prev)
 
 
@@ -151,7 +151,7 @@ def test_container_remove_child():
     c.remove_child(c2)
     eq_(c1, c.child)
     eq_(None, c1.prev)
-    eq_(None, c1.next)
+    eq_(None, c1.__next__)
 
     c, c1, c2, c3 = make_empty(4)
 
@@ -161,7 +161,7 @@ def test_container_remove_child():
 
     c.remove_child(c2)
     eq_(c3, c.child)
-    eq_(c1, c3.next)
+    eq_(c1, c3.__next__)
     eq_(c3, c1.prev)
 
 @patch.object(MessageId, 'is_valid', Mock(return_value=True))
@@ -188,7 +188,7 @@ def test_container_replace_with_its_children():
 
     a.replace_with_its_children(b)
     eq_(c, a.child)
-    eq_(d, a.child.next)
+    eq_(d, a.child.__next__)
 
     eq_(a, c.parent)
     eq_(a, d.parent)
@@ -216,9 +216,9 @@ def test_container_replace_with_its_children():
 
     a.replace_with_its_children(b)
     eq_(c, a.child)
-    eq_(d, a.child.next)
+    eq_(d, a.child.__next__)
     eq_(d, e.prev)
-    eq_(e, d.next)
+    eq_(e, d.__next__)
     #
     # before:
     #
@@ -244,10 +244,10 @@ def test_container_replace_with_its_children():
 
     a.replace_with_its_children(f)
     eq_(b, a.child)
-    eq_(c, b.next)
+    eq_(c, b.__next__)
     eq_(b, c.prev)
     eq_(d, e.prev)
-    eq_(e, d.next)
+    eq_(e, d.__next__)
     eq_(a, c.parent)
     eq_(a, d.parent)
 
@@ -349,7 +349,7 @@ def test_prune_empty():
     r.prune_empty()
     eq_(c1, r.child)
     eq_(a, c1.child)
-    eq_(b, a.next)
+    eq_(b, a.__next__)
 
     #
     # remove useless container
@@ -377,7 +377,7 @@ def test_prune_empty():
     r.prune_empty()
     eq_(c2, r.child)
     eq_(a, c2.child)
-    eq_(b, a.next)
+    eq_(b, a.__next__)
 
     #
     # remove 2 useless containers
@@ -407,7 +407,7 @@ def test_prune_empty():
     r.prune_empty()
     eq_(c3, r.child)
     eq_(a, c3.child)
-    eq_(b, a.next)
+    eq_(b, a.__next__)
 
 
     #
@@ -466,9 +466,9 @@ def test_prune_empty():
 
     r.prune_empty()
     eq_(c3, r.child)
-    eq_(None, c3.next)
+    eq_(None, c3.__next__)
     eq_(a, c3.child)
-    eq_(c, a.next)
+    eq_(c, a.__next__)
 
     #
     # remove megatons of useless containers
@@ -508,13 +508,13 @@ def test_prune_empty():
 
     r.prune_empty()
     eq_(c1, r.child)
-    eq_(None, c1.next)
+    eq_(None, c1.__next__)
     eq_(a, c1.child)
-    eq_(c, a.next)
+    eq_(c, a.__next__)
     eq_(b, a.child)
     eq_(d, c.child)
-    eq_(f, c.next)
-    eq_(e, f.next)
+    eq_(f, c.__next__)
+    eq_(e, f.__next__)
 
 @patch.object(MessageId, 'is_valid', Mock(return_value=True))
 def test_introduces_loop():
@@ -698,7 +698,7 @@ def test_build_root_set():
     eq_('g', root.child.message.message_id)
     eq_('f', root.child.next.child.message.message_id)
     eq_('a', root.child.next.next.message.message_id)
-    eq_(None, root.child.next.next.next)
+    eq_(None, root.child.next.next.__next__)
 
     # Thread should became
     #

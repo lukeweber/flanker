@@ -1,6 +1,6 @@
 # coding:utf-8
 
-from cStringIO import StringIO
+from io import StringIO
 import zlib
 
 from mock import *
@@ -21,7 +21,7 @@ def headers_case_insensitivity_test():
     ok_('Content-Type' in h)
     eq_(1, h.get('Content-Type'))
     eq_(None, h.get('Content-Type2'))
-    eq_([('Content-Type', 1)], h.items())
+    eq_([('Content-Type', 1)], list(h.items()))
 
 
 def headers_order_preserved_test():
@@ -30,14 +30,14 @@ def headers_order_preserved_test():
 
     # various types of iterations
     should_be = [('Mime-Version', '1'), ('Received', '2'), ('Mime-Version', '3'), ('Received', '4')]
-    eq_(should_be, h.items())
-    ok_(isinstance(h.items(), list))
-    eq_(should_be, [p for p in h.iteritems()])
+    eq_(should_be, list(h.items()))
+    ok_(isinstance(list(h.items()), list))
+    eq_(should_be, [p for p in h.items()])
 
     # iterate over keys
     keys = ['Mime-Version', 'Received', 'Mime-Version', 'Received']
     eq_(keys, [p for p in h])
-    eq_(keys, h.keys())
+    eq_(keys, list(h.keys()))
 
 
 def headers_boolean_test():
@@ -119,7 +119,7 @@ def headers_transform_test():
     h.transform(lambda key,val: ("X-{0}".format(key), "t({0})".format(val)))
     ok_(h.have_changed())
 
-    eq_([('X-Mime-Version', 't(1)'), ('X-Received', 't(2)'), ('X-Mime-Version', 't(3)'), ('X-Received', 't(4)')], h.items())
+    eq_([('X-Mime-Version', 't(1)'), ('X-Received', 't(2)'), ('X-Mime-Version', 't(3)'), ('X-Received', 't(4)')], list(h.items()))
 
 def headers_transform_encodedword_test():
     # Create a header with non-ascii characters that will be stored in encoded-word format.

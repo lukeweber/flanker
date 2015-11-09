@@ -24,7 +24,7 @@ def build_table(messages):
 
 def build_root_set(table):
     root = Container()
-    for container in table.itervalues():
+    for container in table.values():
         if not container.parent:
             root.add_child(container)
     return root
@@ -94,27 +94,27 @@ class Container(object):
 
     @property
     def has_one_child(self):
-        return self.child and self.child.next is None
+        return self.child and self.child.__next__ is None
 
     @property
     def last_child(self):
         child = self.child
-        while child and child.next:
-            child = child.next
+        while child and child.__next__:
+            child = child.__next__
         return child
 
     def iter_children(self):
         child = self.child
         while child:
             yield child
-            child = child.next
+            child = child.__next__
 
     def has_descendant(self, container):
         child = self.child
         while child:
             if child == container or child.has_descendant(container):
                 return True
-            child = child.next
+            child = child.__next__
         return False
 
     def add_child(self, container):
@@ -135,12 +135,12 @@ class Container(object):
         if container.parent != self:
             raise Exception("Operation on child when I'm not parent!")
         if not container.prev:
-            self.child = container.next
+            self.child = container.__next__
             if self.child:
                 self.child.prev = None
         else:
-            container.prev.next = container.next
-            if container.next:
+            container.prev.next = container.__next__
+            if container.__next__:
                 container.next.prev = container.prev
         container.parent = None
         container.prev = None
@@ -162,10 +162,10 @@ class Container(object):
             container.prev.next = container.child
             container.child.prev = container.prev
 
-        if container.next:
+        if container.__next__:
             last_child = container.last_child
             container.next.prev = last_child
-            last_child.next = container.next
+            last_child.next = container.__next__
 
     def prune_empty(self):
         """
@@ -175,7 +175,7 @@ class Container(object):
         container = self.child
         while container:
             if container.is_dummy and not container.has_children:
-                next_ = container.next
+                next_ = container.__next__
                 self.remove_child(container)
                 container = next_
             elif container.is_dummy \
@@ -190,9 +190,9 @@ class Container(object):
                 container = next_
             elif container.has_children:
                 container.prune_empty()
-                container = container.next
+                container = container.__next__
             else:
-                container = container.next
+                container = container.__next__
 
 
 class Wrapper(object):

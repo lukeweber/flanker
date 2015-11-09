@@ -1,6 +1,6 @@
 import regex as re
 from collections import deque
-from cStringIO import StringIO
+from io import StringIO
 import sys
 from flanker.mime.message.headers import parsing, is_empty, ContentType
 from flanker.mime.message.part import MimePart, Stream
@@ -25,14 +25,14 @@ def scan(string):
     except DecodingError:
         raise
     except Exception:
-        raise DecodingError("Malformed MIME message"), None, sys.exc_info()[2]
+        raise DecodingError("Malformed MIME message").with_traceback(sys.exc_info()[2])
 
 
 def traverse(pointer, iterator, parent=None):
     """Recursive-descendant parser"""
 
     iterator.check()
-    token = iterator.next()
+    token = next(iterator)
 
     # this means that this part does not have any
     # content type set, so set it to RFC default (text/plain)
@@ -53,7 +53,7 @@ def traverse(pointer, iterator, parent=None):
 
         while True:
             iterator.check()
-            end = iterator.next()
+            end = next(iterator)
             if not end.is_content_type():
                 break
 
@@ -78,7 +78,7 @@ def traverse(pointer, iterator, parent=None):
                 "Multipart message without boundary")
 
         parts = deque()
-        token = iterator.next()
+        token = next(iterator)
 
         # we are expecting first boundary for multipart message
         # something is broken otherwise
@@ -91,7 +91,7 @@ def traverse(pointer, iterator, parent=None):
             if token.is_end():
                 break
             if token == boundary and token.is_final():
-                iterator.next()
+                next(iterator)
                 break
             parts.append(traverse(token, iterator, content_type))
 
@@ -111,7 +111,7 @@ def traverse(pointer, iterator, parent=None):
         if parent and parent.is_multipart():
             while True:
                 iterator.check()
-                end = iterator.next()
+                end = next(iterator)
                 if not end.is_content_type():
                     break
         else:
@@ -159,7 +159,7 @@ def grab_headers(pointer, iterator, parent):
     while True:
 
         iterator.check()
-        end = iterator.next()
+        end = next(iterator)
 
         # remember the first content-type we have met when grabbing
         # the headers until the boundary or message end
@@ -244,7 +244,7 @@ class TokensIterator(object):
         self.stream = StringIO(string)
         self.opcount = 0
 
-    def next(self):
+    def __next__(self):
         self.position += 1
         if self.position >= len(self.tokens):
             return _END

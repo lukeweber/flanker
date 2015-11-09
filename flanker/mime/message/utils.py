@@ -1,4 +1,4 @@
-from cStringIO import StringIO
+from io import StringIO
 from contextlib import closing
 from email.generator import Generator
 

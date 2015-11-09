@@ -4,7 +4,7 @@ import logging
 import mimetypes
 import imghdr
 from contextlib import closing
-from cStringIO import StringIO
+from io import StringIO
 
 from os import path
 from email.mime import audio

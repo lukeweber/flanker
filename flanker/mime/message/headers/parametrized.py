@@ -1,7 +1,7 @@
 """Module that is responsible for parsing parameterized header values
 encoded in accordance to rfc2231 (new style) or rfc1342 (old style)
 """
-import urllib
+import urllib.request, urllib.parse, urllib.error
 import regex as re
 from flanker.mime.message.headers import encodedword
 from flanker.mime.message import charsets
@@ -193,7 +193,7 @@ def decode_charset(parameter):
     if len(parts) != 3:
         return v
     charset, language, val = parts
-    val = urllib.unquote(val)
+    val = urllib.parse.unquote(val)
     return charsets.convert_to_unicode(charset, val)
 
 

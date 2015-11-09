@@ -1,7 +1,7 @@
 # coding:utf-8
 from email import message_from_string
 from contextlib import closing
-from cStringIO import StringIO
+from io import StringIO
 
 from nose.tools import eq_, ok_, assert_false, assert_raises, assert_less
 
@@ -297,7 +297,7 @@ def ascii_to_quoted_printable_test():
 def create_message_without_headers_test():
     """Make sure we can't create a message without headers"""
     message = scan(TEXT_ONLY)
-    for h,v in message.headers.items():
+    for h,v in list(message.headers.items()):
         del message.headers[h]
 
     assert_false(message.headers, message.headers)
@@ -368,7 +368,7 @@ def broken_ctype_test():
 
 def read_attach_test():
     message = scan(MAILGUN_PIC)
-    p = (p for p in message.walk() if p.content_type.main == 'image').next()
+    p = next((p for p in message.walk() if p.content_type.main == 'image'))
     eq_(p.body, MAILGUN_PNG)
 
 

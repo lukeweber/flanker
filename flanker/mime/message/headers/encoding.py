@@ -65,7 +65,7 @@ def encode_address_header(name, value):
 
 def encode_parametrized(key, value, params):
     if params:
-        params = [encode_param(key, n, v) for n, v in params.iteritems()]
+        params = [encode_param(key, n, v) for n, v in params.items()]
         return value + "; " + ("; ".join(params))
     else:
         return value

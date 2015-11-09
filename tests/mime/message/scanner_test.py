@@ -17,7 +17,7 @@ def no_ctype_headers_and_and_boundaries_test():
     eq_(C('text', 'plain', dict(charset='ascii')), message.content_type)
     pmessage = message_from_string(NO_CTYPE)
     eq_(message.body, pmessage.get_payload(decode=True))
-    for a, b in zip(NO_CTYPE_HEADERS, message.headers.iteritems()):
+    for a, b in zip(NO_CTYPE_HEADERS, iter(message.headers.items())):
         eq_(a, b)
 
 
@@ -115,7 +115,7 @@ def test_uservoice_case():
     message._container._body_changed = True
     val = message.to_string()
     for line in val.splitlines():
-        print line
+        print(line)
         ok_(len(line) < 200)
     message = scan(val)
     eq_(html, message.body)

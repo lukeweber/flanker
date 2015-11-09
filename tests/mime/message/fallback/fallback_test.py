@@ -1,7 +1,7 @@
 # coding:utf-8
 
 import email
-from cStringIO import StringIO
+from io import StringIO
 from contextlib import closing
 from email import message_from_string
 
@@ -199,7 +199,7 @@ def message_headers_equivalence_test():
     fallback_message = create.from_string(ENCLOSED)
 
     # When
-    eq_(message.headers.items(), fallback_message.headers.items())
+    eq_(list(message.headers.items()), list(fallback_message.headers.items()))
 
 
 def message_headers_mutation_test():
@@ -239,8 +239,8 @@ def message_headers_append_test():
     restored = create.from_python(orig.to_python_message())
 
     # Then
-    eq_(('Blah', 'kitty'), restored.headers.items()[0])
-    eq_(('Foo-Bar', 'hello'), restored.headers.items()[1])
+    eq_(('Blah', 'kitty'), list(restored.headers.items())[0])
+    eq_(('Foo-Bar', 'hello'), list(restored.headers.items())[1])
 
 
 def message_headers_transform_test():
@@ -276,7 +276,7 @@ def message_headers_transform_test():
          ('X-To', u'"'),
          ('X-Subject', 'W'),
          ('X-X-Example-Sid', 'W')],
-        restored.headers.items())
+        list(restored.headers.items()))
 
 
 def bilingual_test():

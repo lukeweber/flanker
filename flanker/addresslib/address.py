@@ -44,7 +44,7 @@ from flanker.utils import is_pure_ascii
 from flanker.utils import metrics_wrapper
 from flanker.mime.message.headers.encoding import encode_string
 from flanker.mime.message.headers.encodedword import mime_to_unicode
-from urlparse import urlparse
+from urllib.parse import urlparse
 
 
 @metrics_wrapper()
@@ -279,7 +279,7 @@ def validate_list(addr_list, as_tuple=False, metrics=False):
             ulist.append(unpar)
 
         # update all the metrics
-        for k, v in metrics.iteritems():
+        for k, v in metrics.items():
             metrics[k] += v
 
     if as_tuple:

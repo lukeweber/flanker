@@ -6,17 +6,17 @@ from flanker.addresslib import address
 from flanker.addresslib.address import EmailAddress
 from flanker.addresslib.parser import ParserException
 
-VALID_QTEXT         = [chr(x) for x in [0x21] + range(0x23, 0x5b) + range(0x5d, 0x7e)]
+VALID_QTEXT         = [chr(x) for x in [0x21] + list(range(0x23, 0x5b)) + list(range(0x5d, 0x7e))]
 VALID_QUOTED_PAIR   = [chr(x) for x in range(0x20, 0x7e)]
 
 FULL_QTEXT = ''.join(VALID_QTEXT)
 FULL_QUOTED_PAIR = '\\' + '\\'.join(VALID_QUOTED_PAIR)
 
-CONTROL_CHARS = ''.join(map(unichr, range(0, 9) + range(14, 32) + range(127, 160)))
+CONTROL_CHARS = ''.join(map(unichr, list(range(0, 9)) + list(range(14, 32)) + list(range(127, 160))))
 
 @nottest
 def chunks(l, n):
-    for i in xrange(0, len(l), n):
+    for i in range(0, len(l), n):
         yield l[i:i+n]
 
 @nottest

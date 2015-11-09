@@ -45,7 +45,7 @@ class MimeHeaders(object):
         del self._v[normalize(key)]
         self.changed = True
 
-    def __nonzero__(self):
+    def __bool__(self):
         return len(self._v) > 0
 
     def prepend(self, key, value):
@@ -63,7 +63,7 @@ class MimeHeaders(object):
         It remembers the order in which they were added, what
         is really important
         """
-        return self._v.keys()
+        return list(self._v.keys())
 
     def transform(self, fn, decode=False):
         """Accepts a function, getting a key, val and returning
@@ -88,17 +88,17 @@ class MimeHeaders(object):
         """
         Returns header,val pairs in the preserved order.
         """
-        return list(self.iteritems())
+        return list(self.items())
 
     def iteritems(self, raw=False):
         """
         Returns iterator header,val pairs in the preserved order.
         """
         if raw:
-            return self._v.iteritems()
+            return iter(self._v.items())
 
         return iter([(x[0], encodedword.decode(x[1]))
-                     for x in self._v.iteritems()])
+                     for x in self._v.items()])
 
     def get(self, key, default=None):
         """
